@@ -1,0 +1,42 @@
+import { tagTypes } from "../tag-types";
+import { baseApi } from "./baseapi";
+
+const BloodDoonerApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    GetAllUser: build.query({
+      query: () => {
+        return {
+          url: "All_user",
+          method: "GET",
+        };
+      },
+      providesTags: [tagTypes.Alluser],
+    }),
+    UpdateUserStatus: build.mutation({
+      query: (args) => {
+        return {
+          url: `updateUser-status/${args.id}`,
+          method: "PUT",
+          data: args.data,
+        };
+      },
+      invalidatesTags: [tagTypes.Alluser],
+    }),
+    UpdateUserRole: build.mutation({
+      query: (args) => {
+        return {
+          url: `updateUser-role/${args.id}`,
+          method: "PUT",
+          data: args.data,
+        };
+      },
+      invalidatesTags: [tagTypes.Alluser],
+    }),
+  }),
+});
+
+export const {
+  useGetAllUserQuery,
+  useUpdateUserStatusMutation,
+  useUpdateUserRoleMutation,
+} = BloodDoonerApi;

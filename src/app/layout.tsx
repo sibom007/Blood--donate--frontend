@@ -1,8 +1,8 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
-import Provider from "@/lib/Provider/Provider";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Container } from "@mui/material";
+import DProvider from "@/lib/Provider/Provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Provider>{children}</Provider>
+        <DProvider>
+          <Container>{children}</Container>
+        </DProvider>
       </body>
     </html>
   );

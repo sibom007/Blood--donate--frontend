@@ -1,14 +1,23 @@
+"use client";
 import React from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { Toaster } from "sonner";
 
-const Provider = ({ children }: { children: React.ReactNode }) => {
+import { Provider } from "react-redux";
+import { store } from "@/Redux/store";
+import { AuthProvider } from "../AuthProviders/AuthProviders";
+
+const DProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <AppRouterCacheProvider>
-      <Toaster />
-      {children}
+      <Provider store={store}>
+        <AuthProvider>
+          <Toaster />
+          {children}
+        </AuthProvider>
+      </Provider>
     </AppRouterCacheProvider>
   );
 };
 
-export default Provider;
+export default DProvider;
