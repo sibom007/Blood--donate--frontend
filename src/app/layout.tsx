@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <DProvider>
-          <Container>{children}</Container>
+          <>{children}</>
         </DProvider>
       </body>
     </html>

@@ -9,11 +9,11 @@ export default function LandingLayout({
 }) {
   return (
     <Box>
-      <Container>
+      <>
         <NavBar />
         <Box sx={{ minHeight: "100vh" }}>{children}</Box>
         <FooterPage />
-      </Container>
+      </>
     </Box>
   );
 }
