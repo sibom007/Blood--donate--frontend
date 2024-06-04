@@ -36,7 +36,6 @@ export function middleware(request: NextRequest) {
   }
 
   if (accessToken && commonPrivateRoutes.includes(pathname)) {
-    console.log("hekll");
     return NextResponse.next();
   }
 

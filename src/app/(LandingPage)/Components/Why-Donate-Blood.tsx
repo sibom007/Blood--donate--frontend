@@ -5,7 +5,7 @@ import EastIcon from "@mui/icons-material/East";
 
 const WhyDonateBlood = () => {
   return (
-    <Box>
+    <Container maxWidth="lg" component="div">
       <Box
         sx={{
           display: "flex",
@@ -15,6 +15,7 @@ const WhyDonateBlood = () => {
         }}>
         <Box>
           <Typography
+            component={"div"}
             sx={{
               fontSize: "30px",
               fontWeight: 600,
@@ -23,6 +24,7 @@ const WhyDonateBlood = () => {
             }}>
             Why Donate Blood ?
             <Typography
+              component={"p"}
               sx={{
                 fontSize: "15px",
                 fontWeight: 300,
@@ -39,7 +41,7 @@ const WhyDonateBlood = () => {
             sx={{ mt: 5 }}>
             <Box>
               <Stack direction={"row"} spacing={2} sx={{ mt: 2 }}>
-                <DataSaverOnIcon fontSize="medium" sx={{ color: "#1e40af" }} />
+                <DataSaverOnIcon sx={{ color: "#1e40af" }} />
                 <Typography>SAVE LIVES</Typography>
               </Stack>
               <Typography sx={{ mt: 2, color: "#6b7280" }}>
@@ -96,11 +98,11 @@ const WhyDonateBlood = () => {
               borderRadius: "6px",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             }}>
-            Start Donate
+            Start Donating
           </Typography>
         </button>
       </Box>
-    </Box>
+    </Container>
   );
 };
 

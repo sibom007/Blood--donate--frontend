@@ -7,9 +7,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { FieldValues } from "react-hook-form";
 
 const ContactWithBloodDonner = () => {
-  const handleEmail = (data: FieldValues) => {
-    console.log(data);
-  };
+  const handleEmail = (data: FieldValues) => {};
 
   return (
     <Stack sx={{ mt: 2 }}>

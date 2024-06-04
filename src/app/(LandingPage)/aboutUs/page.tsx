@@ -1,4 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Blood Donate App | About page",
+  description: "About Donation",
+};
+
 
 const AboutUs = () => {
   return (

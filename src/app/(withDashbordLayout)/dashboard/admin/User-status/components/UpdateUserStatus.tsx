@@ -9,7 +9,8 @@ import SendIcon from "@mui/icons-material/Send";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Typography } from "@mui/material";
 import { toast } from "sonner";
-import { useUpdateUserRoleMutation } from "@/Redux/api/UpdateUserApi";
+import { useUpdateUserStatusMutation } from "@/Redux/api/UpdateUserApi";
+import { useRouter } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -24,7 +25,8 @@ const style = {
 };
 
 export default function UpdateUserStatusModal({ userId }: { userId: string }) {
-  const [UpdateUserStatus, { isLoading }] = useUpdateUserRoleMutation();
+  const [UpdateUserStatus, { isLoading }] = useUpdateUserStatusMutation();
+  const router = useRouter();
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -35,9 +37,9 @@ export default function UpdateUserStatusModal({ userId }: { userId: string }) {
       data,
     };
     const res = await UpdateUserStatus(info);
-
     if (res.data.data.count === 1) {
       toast.success("Status is Update successfully");
+      router.refresh();
       setOpen(false);
     }
   };

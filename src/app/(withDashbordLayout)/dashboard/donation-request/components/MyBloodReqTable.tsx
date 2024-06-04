@@ -13,7 +13,7 @@ import { useGetMyBloodDonnerRequestQuery } from "@/Redux/api/BloodDonnerapi";
 
 export default function MyBloodReqTable() {
   const { data, isLoading, isFetching } = useGetMyBloodDonnerRequestQuery({});
-  if (isFetching && isLoading) {
+  if (isLoading) {
     return (
       <div className="md:ml-[350px]  lg:ml-[400px] mt-32">
         <div className="cssload-thecube ">
@@ -27,65 +27,69 @@ export default function MyBloodReqTable() {
   }
 
   return (
-    <TableContainer component={Paper} sx={{ mt: 4 }}>
-      <Typography
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          color: "gray",
-          fontSize: "25px",
-          mt: 3,
-        }}>
-        My Blood Request
-      </Typography>
-      <Typography
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          color: "gray",
-          fontSize: "15px",
-        }}>
-        Hello Welcome Here, You can Your Blood Request
-      </Typography>
+    <div className="lg:ml-[100px]">
+      <TableContainer component={Paper} sx={{ mt: 4 }}>
+        <Typography
+          component={"h1"}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            color: "gray",
+            fontSize: "25px",
+            mt: 3,
+          }}>
+          My Blood Request
+        </Typography>
+        <Typography
+          component={"h1"}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            color: "gray",
+            fontSize: "15px",
+          }}>
+          Hello Welcome Here, You can Your Blood Request
+        </Typography>
 
-      <Table sx={{ minWidth: 950 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Hospital Name</TableCell>
-            <TableCell align="center">Hospital Address</TableCell>
-            <TableCell align="center">Phone Number</TableCell>
-            <TableCell align="center">Request Status</TableCell>
-            <TableCell align="center">DateOfDonation </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data?.data.length === 0 ? (
-            <Typography
-              sx={{
-                px: 10,
-                py: 10,
-                alignContent: "center",
-                alignItems: "center",
-              }}>
-              NO DATA Available
-            </Typography>
-          ) : (
-            data?.data.map((item: any, index: number) => (
-              <TableRow
-                key={item.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  {index + 1}. {item.hospitalName}
-                </TableCell>
-                <TableCell align="center">{item.hospitalAddress}</TableCell>
-                <TableCell align="center">{item.phoneNumber}</TableCell>
-                <TableCell align="center">{item.requestStatus}</TableCell>
-                <TableCell align="center">{item.dateOfDonation}</TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        <Table sx={{ minWidth: 950 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Hospital Name</TableCell>
+              <TableCell align="center">Hospital Address</TableCell>
+              <TableCell align="center">Phone Number</TableCell>
+              <TableCell align="center">Request Status</TableCell>
+              <TableCell align="center">DateOfDonation </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data?.data.length === 0 ? (
+              <Typography
+                sx={{
+                  px: 10,
+                  py: 10,
+                  alignContent: "center",
+                  alignItems: "center",
+                }}>
+                NO DATA Available
+              </Typography>
+            ) : (
+              data?.data.map((item: any, index: number) => (
+                <TableRow
+                  key={item.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                  <TableCell component="th" scope="row">
+                    {index + 1}. {item.hospitalName}
+                  </TableCell>
+                  <TableCell align="center">{item.hospitalAddress}</TableCell>
+                  <TableCell align="center">{item.phoneNumber}</TableCell>
+                  <TableCell align="center">{item.requestStatus}</TableCell>
+                  <TableCell align="center">{item.dateOfDonation}</TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 }

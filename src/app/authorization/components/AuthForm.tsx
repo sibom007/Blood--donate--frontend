@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import DInput from "@/shared/DInput/DInput";
 import DForm from "@/shared/DForm/DForm";
 import SocialLogin from "./SocialLogin";
@@ -24,10 +24,19 @@ const AuthForm = () => {
   );
 
   const router = useRouter();
+  const [photo, setphoto] = useState("");
+  const [photofile, setPhotofile] = useState<File | null>(null);
   const [variant, setVariant] = useState<"LOGIN" | "REGISTER">("LOGIN");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const [Register] = useRegisterMutation();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setPhotofile(files[0]);
+    }
+  };
+
   const toggleVariant = useCallback(() => {
     if (variant === "LOGIN") {
       setVariant("REGISTER");
@@ -38,30 +47,46 @@ const AuthForm = () => {
 
   const handleSubmit = async (data: any) => {
     setIsLoading(true);
+
     if (variant === "REGISTER") {
       try {
-        const RegisterData = {
-          name: data.name,
-          email: data.email,
-          password: data.password,
-          bloodType: data.bloodType,
-          donateBlood: data.donateBlood,
-          location: data.location,
-          age: Number(data.age),
-          bio: data.bio,
-          lastDonationDate: dateFormatter(data.lastDonationDate),
-        };
-
-        const res = await Register(RegisterData);
-
-        if (res?.data?.errorMessages) {
-          toast.error(res.data.errorMessages);
+        const url = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`;
+        const formData = new FormData();
+        if (photofile) {
+          formData.append("image", photofile);
         }
-        if (res?.data?.data?.success === true) {
-          toast.success(res?.data?.data?.message);
-          setIsLoading(false);
-          setVariant("LOGIN");
-        }
+        const M = fetch(url, {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then(async (res) => {
+            return {
+              name: data.name,
+              email: data.email,
+              password: data.password,
+              bloodType: data.bloodType,
+              photo: await res?.data?.display_url,
+              donateBlood: data.donateBlood,
+              location: data.location,
+              age: Number(data.age),
+              bio: data.bio,
+              lastDonationDate: dateFormatter(data.lastDonationDate),
+            };
+          })
+          .catch((err) => {});
+        M.then(async (item) => {
+          const res = await Register(item);
+          if (res?.data?.errorMessages) {
+            setIsLoading(false);
+            toast.error(res.data.errorMessages);
+          }
+          if (res?.data?.data?.id) {
+            toast.success("Register Successfull");
+            setIsLoading(false);
+            setVariant("LOGIN");
+          }
+        });
       } catch (error: any) {
         toast.error(error.message);
       }
@@ -82,7 +107,6 @@ const AuthForm = () => {
           toast.success(res?.message);
           setIsLoading(false);
           router.push("/");
-          router.refresh();
         }
       } catch (error: any) {
         toast.error(error.message);
@@ -144,8 +168,14 @@ const AuthForm = () => {
                 required={true}
                 type="text"
                 fullWidth
+                sx={{ mb: 2 }}
               />
-
+              <input
+                className="border-2 p-2"
+                type="file"
+                name="photo"
+                onChange={handleFileChange}
+              />
               <DSelectField
                 fullWidth
                 name="donateBlood"

@@ -24,7 +24,7 @@ const style = {
 };
 
 export default function StatusModal({ RequestId }: { RequestId: string }) {
-  const [Upadtestatus] = useUpadtestatusMutation();
+  const [Upadtestatus, { isLoading }] = useUpadtestatusMutation();
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -66,7 +66,7 @@ export default function StatusModal({ RequestId }: { RequestId: string }) {
               size="small"
               type="submit"
               endIcon={<SendIcon />}
-              //   loading={isLoading}
+              loading={isLoading}
               loadingPosition="end"
               sx={{
                 backgroundColor: "#A5C9CA",

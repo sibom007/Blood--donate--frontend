@@ -10,7 +10,7 @@ const BloodDoonerApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: [tagTypes.Alluser],
+      providesTags: [tagTypes.Alluser, tagTypes.Donner],
     }),
     UpdateUserStatus: build.mutation({
       query: (args) => {
@@ -20,7 +20,7 @@ const BloodDoonerApi = baseApi.injectEndpoints({
           data: args.data,
         };
       },
-      invalidatesTags: [tagTypes.Alluser],
+      invalidatesTags: [tagTypes.Alluser, tagTypes.Donner],
     }),
     UpdateUserRole: build.mutation({
       query: (args) => {
@@ -30,7 +30,7 @@ const BloodDoonerApi = baseApi.injectEndpoints({
           data: args.data,
         };
       },
-      invalidatesTags: [tagTypes.Alluser],
+      invalidatesTags: [tagTypes.Alluser, tagTypes.Donner],
     }),
   }),
 });

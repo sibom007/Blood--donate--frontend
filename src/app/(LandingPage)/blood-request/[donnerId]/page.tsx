@@ -1,5 +1,12 @@
 import { Box } from "@mui/material";
 import BloodRequestFrom from "../components/BloodRequestFrom";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Blood Donate App | Donner Request",
+  description: "Donner Request",
+};
+
 
 type Tprops = {
   params: {

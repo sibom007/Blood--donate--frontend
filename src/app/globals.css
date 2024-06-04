@@ -5,8 +5,12 @@
 
 .hover-link:hover {
    transform: translateY(-2px);
-  transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: transform 0.3s ease-in-out;
 }
+
+
+
+
 
 
 

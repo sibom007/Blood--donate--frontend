@@ -1,15 +1,24 @@
-import { Container } from "@mui/material";
 import HeroSection from "./Components/HeroSection";
 import WhyDonateBlood from "./Components/Why-Donate-Blood";
-import SearchDonner from "./donner/components/SearchDonner";
+import OurDonors from "./Components/OurDonors";
+import BecomeADonor from "./Components/BecomeADonor";
+import OurDonnerSay from "./Components/OurDonnerSay";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Blood Donate App | Home",
+  description: "Home",
+};
 
 const HomePage = () => {
   return (
-    <Container maxWidth="lg" component="div">
+    <>
       <HeroSection />
       <WhyDonateBlood />
-      <SearchDonner />
-    </Container>
+      <OurDonors />
+      <BecomeADonor />
+      <OurDonnerSay />
+    </>
   );
 };
 

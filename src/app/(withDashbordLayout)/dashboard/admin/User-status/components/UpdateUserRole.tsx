@@ -10,6 +10,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Typography } from "@mui/material";
 import { toast } from "sonner";
 import { useUpdateUserRoleMutation } from "@/Redux/api/UpdateUserApi";
+import { useRouter } from "next/navigation";
 
 const style = {
   position: "absolute" as "absolute",
@@ -25,6 +26,7 @@ const style = {
 
 export default function UpdateUserRoleModal({ userId }: { userId: string }) {
   const [UpdateUserRole, { isLoading }] = useUpdateUserRoleMutation();
+  const router = useRouter();
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -38,6 +40,7 @@ export default function UpdateUserRoleModal({ userId }: { userId: string }) {
     if (res.data.data.count === 1) {
       toast.success("Role is Update successfully");
       setOpen(false);
+      router.refresh();
     }
   };
 

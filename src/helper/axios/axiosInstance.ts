@@ -17,7 +17,7 @@ instance.interceptors.request.use(
         if (accessToken) {
           config.headers.Authorization = accessToken;
         }
-        return config;
+        return config || {};
       })
       .catch((error) => {
         return Promise.reject(error);

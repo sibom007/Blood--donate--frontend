@@ -9,6 +9,7 @@ import { FieldValues } from "react-hook-form";
 import { useBloodDonnerRequestMutation } from "@/Redux/api/BloodDonnerapi";
 import { dateFormatter } from "@/utils/dateFormatter";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type TBRProps = {
   donorId: string;
@@ -20,6 +21,7 @@ type TBRProps = {
 };
 
 const BloodRequestFrom = ({ id }: { id: string }) => {
+  const routor = useRouter();
   const [BloodDonnerRequest] = useBloodDonnerRequestMutation();
 
   const handleBloodRequest = async (data: FieldValues) => {
@@ -34,6 +36,7 @@ const BloodRequestFrom = ({ id }: { id: string }) => {
     const res = await BloodDonnerRequest(payload);
     if (res.data.data.id) {
       toast.success("Request has Done");
+      routor.push("/donner");
     }
   };
 

@@ -16,11 +16,15 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/AuthProviders/AuthProviders";
+import { TUser } from "@/types";
+import { GetUserinfo } from "@/service/Action/Login";
+import { toast } from "sonner";
 
 const SearchDonner = () => {
   const query: Record<string, any> = {};
-
+  const [userId, setUser] = useState<TUser | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const debounced = useDebounced({
@@ -30,13 +34,29 @@ const SearchDonner = () => {
   if (!!debounced) {
     query["searchTerm"] = searchTerm;
   }
+
+  useEffect(() => {
+    GetUserinfo()
+      .then((user1) => {
+        if (user1) {
+          setUser(user1);
+        }
+      })
+      .catch((error) => {});
+  }, []);
+
   const {
     data: DonnerList,
     isLoading,
     isFetching,
   } = useGetDonnerListQuery({ ...query });
+
+  const filteredData = DonnerList?.data?.data.filter(
+    (item: any) => item.id !== userId?.id
+  );
+
   return (
-    <Box>
+    <Container>
       <Typography
         sx={{
           display: "flex",
@@ -72,7 +92,7 @@ const SearchDonner = () => {
 
       <Stack sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
         <div className="grid  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {isFetching && isLoading === true ? (
+          {isLoading === true ? (
             <div className="md:ml-[350px]  lg:ml-[500px] mt-20">
               <div className="cssload-thecube ">
                 <div className="cssload-cube cssload-c1"></div>
@@ -82,7 +102,7 @@ const SearchDonner = () => {
               </div>
             </div>
           ) : (
-            DonnerList?.data?.data?.map((item: any) => {
+            filteredData?.map((item: any) => {
               return (
                 <Card
                   key={item.id}
@@ -124,7 +144,7 @@ const SearchDonner = () => {
           )}
         </div>
       </Stack>
-    </Box>
+    </Container>
   );
 };
 

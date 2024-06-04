@@ -1,24 +1,32 @@
+"use client";
 import { Box, Typography } from "@mui/material";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import { useAuth } from "@/lib/AuthProviders/AuthProviders";
 
 const FooterPage = () => {
+  const user = useAuth();
   return (
     <Box
       sx={{
-        backgroundColor: "#A5C9CA",
+        backgroundColor: "#f6f6f6",
+        px: 20,
         py: 3,
-        px: 10,
         mt: 8,
       }}>
       <Box
         sx={{
-          color: "white",
-          display: { sx: "none", md: "flex" },
-          justifyContent: "space-between",
-          width: "100%",
+          display: "flex",
+          justifyContent: "space-around",
+          justifyItems: "center",
         }}>
-        <Typography>Email : Sibomsaha@hmail.com </Typography>
-        <Typography>Phone Number :01999233993</Typography>
-        <Typography>Phone Number :01499233993</Typography>
+        <Typography sx={{ fontSize: "15px", color: "#7b7b7b" }}>
+          Email : {user?.user?.email}
+        </Typography>
+        <Box>
+          <FacebookIcon sx={{ color: "#7b7b7b", fontSize: "30px" }} />
+          <InstagramIcon sx={{ color: "#7b7b7b", fontSize: "30px" }} />
+        </Box>
       </Box>
     </Box>
   );
