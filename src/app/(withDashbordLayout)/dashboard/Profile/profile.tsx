@@ -138,7 +138,7 @@ const Profile = () => {
               }}>
               <Typography>
                 {" "}
-                {data?.data.availability ? "Available" : "Not Available"}
+                {data?.data?.availability ? "Available" : "Not Available"}
               </Typography>
             </Box>
           </Stack>

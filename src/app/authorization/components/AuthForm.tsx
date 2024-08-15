@@ -1,10 +1,9 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import DInput from "@/shared/DInput/DInput";
 import DForm from "@/shared/DForm/DForm";
-import SocialLogin from "./SocialLogin";
 import DSelectField from "@/shared/DSelectField/DSelectField";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import DDatePicker from "@/shared/DDatePicker/DDatePicker";
 import { dateFormatter } from "@/utils/dateFormatter";
@@ -14,6 +13,7 @@ import { toast } from "sonner";
 import { userLogin } from "@/service/Action/Login";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import DemoLoginInfo from "./DemoLoginInfo";
 
 type variant = "LOGIN" | "REGISTER";
 
@@ -122,75 +122,83 @@ const AuthForm = () => {
         <DForm onSubmit={handleSubmit}>
           {variant === "REGISTER" && (
             <>
-              <DInput
-                name="name"
-                label="Name"
-                required={true}
-                type="text"
-                fullWidth
-              />
-              <DSelectField
-                fullWidth
-                required={true}
-                name="bloodType"
-                items={[
-                  "A_POSITIVE",
-                  "B_POSITIVE",
-                  "A_NEGATIVE",
-                  "B_NEGATIVE",
-                  "O_POSITIVE",
-                  "O_NEGATIVE",
-                  "AB_POSITIVE",
-                  "AB_NEGATIVE",
-                ]}
-                label="Blood Donner"
-                sx={{ mt: 2, mb: 2 }}
-              />
-              <DInput
-                name="location"
-                label="Location"
-                required={true}
-                type="text"
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <DInput
-                name="age"
-                label="Age"
-                required={true}
-                type="text"
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <DInput
-                name="bio"
-                label="Bio"
-                required={true}
-                type="text"
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <input
-                className="border-2 p-2"
-                type="file"
-                name="photo"
-                onChange={handleFileChange}
-              />
-              <DSelectField
-                fullWidth
-                name="donateBlood"
-                items={["YES", "NO"]}
-                required={true}
-                label="Blood Donner"
-                sx={{ mt: 2, mb: 2 }}
-              />
+              <Stack direction={"row"} spacing={2} sx={{ mb: 2 }}>
+                <DInput
+                  name="name"
+                  label="Name"
+                  required={true}
+                  type="text"
+                  fullWidth
+                />
+                <DSelectField
+                  fullWidth
+                  required={true}
+                  name="bloodType"
+                  items={[
+                    "A_POSITIVE",
+                    "B_POSITIVE",
+                    "A_NEGATIVE",
+                    "B_NEGATIVE",
+                    "O_POSITIVE",
+                    "O_NEGATIVE",
+                    "AB_POSITIVE",
+                    "AB_NEGATIVE",
+                  ]}
+                  label="Blood Donner"
+                  sx={{ mt: 2, mb: 2 }}
+                />
+              </Stack>
+              <Stack direction={"row"} spacing={2} sx={{ mb: 2 }}>
+                <DInput
+                  name="location"
+                  label="Location"
+                  required={true}
+                  type="text"
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <DInput
+                  name="age"
+                  label="Age"
+                  required={true}
+                  type="text"
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+              </Stack>
+              <Stack direction={"row"} spacing={2} sx={{ mb: 2 }}>
+                <DInput
+                  name="bio"
+                  label="Bio"
+                  required={true}
+                  type="text"
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <input
+                  className="border-2 w-[175px] p-1"
+                  type="file"
+                  name="photo"
+                  onChange={handleFileChange}
+                />
+              </Stack>
+              <Stack direction={"row"} spacing={2} sx={{ mb: 2 }}>
+                <DSelectField
+                  fullWidth
+                  name="donateBlood"
+                  items={["YES", "NO"]}
+                  required={true}
+                  label="Blood Donner"
+                  sx={{ mt: 2, mb: 2 }}
+                />
 
-              <DDatePicker
-                fullWidth
-                disableFuture
-                name="lastDonationDate"
-                label="Last Donation Date"
-              />
+                <DDatePicker
+                  fullWidth
+                  disableFuture
+                  name="lastDonationDate"
+                  label="Last Donation Date"
+                />
+              </Stack>
             </>
           )}
           <DInput
@@ -199,7 +207,7 @@ const AuthForm = () => {
             required={true}
             type="text"
             fullWidth
-            sx={{ mt: 2, mb: 2 }}
+            sx={{ mb: 2 }}
           />
           <DInput
             name="password"
@@ -233,7 +241,8 @@ const AuthForm = () => {
         </DForm>
         <div className="border-[1px] mt-5 border-gray-500" />
         <div className="mt-3">
-          <SocialLogin />
+          {/* <SocialLogin /> */}
+          <DemoLoginInfo />
         </div>
 
         <div className="flex justify-center gap-2 mt-6 px-2 text-sm">
