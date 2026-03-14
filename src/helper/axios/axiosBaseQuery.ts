@@ -1,26 +1,30 @@
-import { IMeta } from "@/types";
-import type { BaseQueryFn } from "@reduxjs/toolkit/query";
-
+import { BaseQueryFn } from "@reduxjs/toolkit/query";
 import type { AxiosRequestConfig, AxiosError } from "axios";
+
 import { instance as axiosInstance } from "./axiosInstance";
+import { ApiError } from "./type";
+
+type AxiosBaseQueryArgs = {
+  url: string;
+  method?: AxiosRequestConfig["method"];
+  data?: AxiosRequestConfig["data"];
+  params?: AxiosRequestConfig["params"];
+  headers?: AxiosRequestConfig["headers"];
+  contentType?: string;
+};
+
+type AxiosBaseQueryError = {
+  status?: number;
+  data: ApiError | string;
+};
 
 export const axiosBaseQuery =
-  (
-    { baseUrl }: { baseUrl: string } = { baseUrl: "" }
-  ): BaseQueryFn<
-    {
-      url: string;
-      method?: AxiosRequestConfig["method"];
-      data?: AxiosRequestConfig["data"];
-      params?: AxiosRequestConfig["params"];
-      headers?: AxiosRequestConfig["headers"];
-      meta?: IMeta;
-      contentType?: string;
-    },
+  ({ baseUrl = "" }: { baseUrl?: string } = {}): BaseQueryFn<
+    AxiosBaseQueryArgs,
     unknown,
-    unknown
+    AxiosBaseQueryError
   > =>
-  async ({ url, method, data, params, headers, contentType }) => {
+  async ({ url, method = "GET", data, params, headers, contentType }) => {
     try {
       const result = await axiosInstance({
         url: baseUrl + url,
@@ -29,63 +33,22 @@ export const axiosBaseQuery =
         params,
         headers: {
           ...headers,
-          "Content-Type": contentType || "application/json",
+          "Content-Type": contentType ?? "application/json",
         },
       });
-      return { data: result };
+
+      return {
+        data: result,
+      };
     } catch (axiosError) {
-      const err = axiosError as AxiosError;
+      const err = axiosError as AxiosError<ApiError>;
+
       return {
         error: {
           status: err.response?.status,
-          data: err.response?.data || err.message,
+          message: err.message,
+          data: err.response?.data ?? err.message,
         },
       };
     }
   };
-
-// import { IMeta } from "@/types";
-// import type { BaseQueryFn } from "@reduxjs/toolkit/query";
-// import type { AxiosRequestConfig, AxiosError } from "axios";
-// import { instance as axiosInstance } from "./axiosInstance";
-
-// export const axiosBaseQuery =
-//   (
-//     { baseUrl }: { baseUrl: string } = { baseUrl: "" }
-//   ): BaseQueryFn<
-//     {
-//       url: string;
-//       method?: AxiosRequestConfig["method"];
-//       data?: AxiosRequestConfig["data"];
-//       params?: AxiosRequestConfig["params"];
-//       headers?: AxiosRequestConfig["headers"];
-//       meta?: IMeta;
-//       contentType?: string;
-//     },
-//     unknown,
-//     unknown
-//   > =>
-//   async ({ url, method = "GET", data, params, headers, contentType }) => {
-//     try {
-//       const result = await axiosInstance({
-//         url: baseUrl + url,
-//         method,
-//         data,
-//         params,
-//         headers: {
-//           ...headers,
-//           "Content-Type": contentType || "application/json",
-//         },
-//       });
-//       return { data: { result } };
-//       // return result;
-//     } catch (axiosError) {
-//       const err = axiosError as AxiosError;
-//       return {
-//         error: {
-//           status: err.response?.status || 500,
-//           data: err.response?.data || err.message,
-//         },
-//       };
-//     }
-//   };

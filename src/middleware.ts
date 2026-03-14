@@ -1,66 +1,61 @@
 import { jwtDecode } from "jwt-decode";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { TJwtUser } from "./feature/auth/type";
 
-type Role = keyof typeof roleBasedPrivateRoutes;
+const publicRoutes = ["/", "/sign-in", "/sign-up"];
 
-const AuthRoutes = ["/authorization"];
-const commonPrivateRoutes = [
-  "/dashboard",
-  "/blood-request",
-  "/dashboard/change-password",
-];
-const roleBasedPrivateRoutes = {
-  USER: [/^\/dashboard\/user/],
-  ADMIN: [/^\/dashboard\/ADMIN/],
+const getDashboardRoute = (role: string) => {
+  return `/dashboard/${role.toLowerCase()}`;
 };
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const accessToken = cookies().get("accessToken")?.value;
+  const refreshToken = request.cookies.get("refreshToken")?.value;
 
-  if (!accessToken) {
-    if (AuthRoutes.includes(pathname)) {
-      return NextResponse.next();
-    } else {
-      return NextResponse.redirect(new URL("/authorization", request.url));
-    }
-  }
-  if (
-    accessToken &&
-    commonPrivateRoutes.some((route) => pathname.startsWith(route))
-  ) {
-    return NextResponse.next();
-  }
+  let decoded: TJwtUser | null = null;
 
-  if (accessToken && commonPrivateRoutes.includes(pathname)) {
-    return NextResponse.next();
-  }
-
-  let decodedData = null;
-
-  if (accessToken) {
-    decodedData = jwtDecode(accessToken) as any;
-  }
-
-  const role = decodedData?.role;
-
-  // if (role === 'ADMIN' && pathname.startsWith('/dashboard/admin')) {
-  //    return NextResponse.next();
-  // }
-
-  if (role && roleBasedPrivateRoutes[role as Role]) {
-    const routes = roleBasedPrivateRoutes[role as Role];
-    if (routes.some((route) => pathname.match(route))) {
-      return NextResponse.next();
+  if (refreshToken) {
+    try {
+      decoded = jwtDecode<TJwtUser>(refreshToken);
+    } catch {
+      decoded = null;
     }
   }
 
-  return NextResponse.redirect(new URL("/", request.url));
+  const isAuthenticated = !!decoded;
+  const role = decoded?.role;
+
+  const roleDashboard = role ? getDashboardRoute(role) : null;
+
+  /* prevent logged users from auth pages */
+  if (isAuthenticated && (pathname === "/sign-in" || pathname === "/sign-up")) {
+    return NextResponse.redirect(new URL(roleDashboard!, request.url));
+  }
+
+  /* allow public routes */
+  if (!isAuthenticated && publicRoutes.includes(pathname)) {
+    return NextResponse.next();
+  }
+
+  /* block dashboard routes if not logged in */
+  if (!isAuthenticated && pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
+  }
+
+  /* check role exists for dashboard */
+  if (pathname.startsWith("/dashboard")) {
+    if (!role) {
+      return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/authorization", "/blood-request/:id*", "/dashboard/:page*"],
+  matcher: [
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+  ],
 };

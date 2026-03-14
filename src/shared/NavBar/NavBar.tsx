@@ -15,7 +15,7 @@ import { GetUserinfo, logOut } from "@/service/Action/Login";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import NoPhoto from "@/assets/img.png";
-import { useGetMyProfileBYIdQuery } from "@/Redux/api/Authapi";
+import { useGetMyProfileBYIdQuery } from "@/Redux/api/auth-api";
 import { TUser } from "@/types";
 import { toast } from "sonner";
 
