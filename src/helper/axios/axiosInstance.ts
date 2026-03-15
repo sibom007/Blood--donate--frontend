@@ -1,69 +1,93 @@
-import { authKey } from "@/contants/authkey";
-import { GetaccessToken } from "@/service/Action/Login";
-import { getNewAccessToken } from "@/service/auth.services";
-import { IGenericErrorResponse, ResponseSuccessType } from "@/types";
-import { getFromLocalStorage, setToLocalStorage } from "@/utils/local-storage";
-import axios from "axios";
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 
-const instance = axios.create();
-instance.defaults.headers.post["Content-Type"] = "application/json";
-instance.defaults.headers["Accept"] = "application/json";
-instance.defaults.timeout = 60000;
+import { authKey } from "@/lib/authkey";
+import { ApiError, ApiResponse } from "./type";
+import { getFromLocalStorage } from "@/lib/local-storage";
+import { getNewAccessToken } from "@/feature/auth/auth.services";
+
+type RetryConfig = InternalAxiosRequestConfig & {
+  sent?: boolean;
+};
+
+const instance = axios.create({
+  timeout: 60000,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+});
+
+/* ---------- REQUEST ---------- */
 
 instance.interceptors.request.use(
-  function (config) {
-    return GetaccessToken(authKey)
-      .then((accessToken) => {
-        if (accessToken) {
-          config.headers.Authorization = accessToken;
-        }
-        return config || {};
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
+  (config: InternalAxiosRequestConfig) => {
+    const token = getFromLocalStorage(authKey);
+
+    if (token) {
+      config.headers = config.headers ?? {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
   },
-  function (error) {
-    // Do something with request error
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error),
 );
 
-// Add a response interceptor
-instance.interceptors.response.use(
-  //@ts-ignore
-  function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
+/* ---------- RESPONSE ---------- */
 
-    const responseObject: ResponseSuccessType = {
-      data: response?.data?.data,
-      meta: response?.data?.data?.meta,
-    };
-    return responseObject;
+instance.interceptors.response.use(
+  (response: AxiosResponse<ApiResponse>) => {
+    const res = response.data;
+
+    return {
+      success: res.success,
+      message: res.message,
+      data: res.data,
+    } as ApiResponse;
   },
-  async function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    const config = error.config;
-    if (error?.response?.status === 500 && !config.sent) {
+
+  async (error: AxiosError<ApiError>) => {
+    const config = error.config as RetryConfig;
+
+    if (
+      error.response?.data.message === "ACCESS_TOKEN_EXPIRED" &&
+      error.response?.data.err?.statusCode === 401 &&
+      !config?.sent
+    ) {
       config.sent = true;
-      const response = await getNewAccessToken();
-      const accessToken = response?.data?.accessToken;
-      config.headers["Authorization"] = accessToken;
-      setToLocalStorage(authKey, accessToken);
-      return instance(config);
-    } else {
-      const responseObject: IGenericErrorResponse = {
-        statusCode: error?.response?.data?.err?.statusCode || 500,
-        message:
-          error?.response?.data?.errorSources || "Something went wrong!!!",
-        errorMessages: error?.response?.data?.message,
-      };
-      // return Promise.reject(error);
-      return responseObject;
+
+      try {
+        // get new accessToken
+        const accessToken = await getNewAccessToken();
+
+        // Call api with new accessToken
+        if (accessToken) {
+          if (config.headers) {
+            config.headers.Authorization = `Bearer ${accessToken}`;
+          }
+
+          return instance(config);
+        }
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
+      }
     }
-  }
+
+    const errData = error.response?.data;
+
+    const normalizedError: ApiError = {
+      success: false,
+      message: errData?.message ?? "Something went wrong",
+      errorSources: errData?.errorSources ?? [],
+      stack: errData?.stack,
+    };
+
+    return Promise.reject(normalizedError);
+  },
 );
 
 export { instance };
