@@ -18,14 +18,34 @@ export const BLOOD_TYPES = [
   "O_NEGATIVE",
 ];
 
+
 export const SignUpSchema = z.object({
-  name: z.string().min(3),
-  email: z.string().email(),
-  password: z.string().min(6),
-  bloodType: z.string(),
-  age: z.coerce.number().min(18),
-  phoneNumber: z.string().min(11),
-  city: z.string().min(2),
+  name: z
+    .string()
+    .min(3, "Name must be at least 3 characters")
+    .regex(/^[A-Za-z\s]+$/, "Name can only contain letters"),
+
+  email: z.string().email("Invalid email address"),
+
+  password: z
+    .string()
+    .min(7, "Password must be at least 7 characters")
+    .regex(/[A-Z]/, "Must contain one uppercase letter")
+    .regex(/[a-z]/, "Must contain one lowercase letter")
+    .regex(/[^A-Za-z0-9]/, "Must contain one special character"),
+
+  bloodType: z.string().min(1, "Blood type is required"),
+
+  age: z.coerce
+    .number()
+    .min(18, "Minimum age is 18")
+    .max(60, "Maximum age is 60"),
+
+  phoneNumber: z
+    .string()
+    .regex(/^8801[3-9]\d{8}$/, "Enter valid Bangladesh number"),
+
+  city: z.string().min(2, "City must be at least 2 characters"),
 });
 
 export type SignUpInputData = z.infer<typeof SignUpSchema>;

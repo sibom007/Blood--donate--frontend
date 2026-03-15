@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useState } from "react";
 import {
   Field,
   FieldLabel,
@@ -19,11 +21,14 @@ import { useDispatch } from "react-redux";
 import { setCredentials } from "@/feature/auth/auth-slice";
 import type { AppDispatch } from "@/Redux/store";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 export const SignInView = () => {
   const [signIn, { isLoading }] = useSignInMutation();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const [showPassword, setShowPassword] = useState(false);
+
   const form = useForm<SignInInputData>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
@@ -37,21 +42,11 @@ export const SignInView = () => {
       const res = await signIn(value).unwrap();
       toast.success(res.message);
 
-      // store token
       setToLocalStorage(authKey, res.data.token);
-
-      // store user in redux
 
       dispatch(
         setCredentials({
-          user: {
-            id: res.data.user.id,
-            name: res.data.user.name,
-            email: res.data.user.email,
-            role: res.data.user.role,
-            isAvailable: res.data.user.isAvailable,
-            tokenVersion: res.data.user.tokenVersion,
-          },
+          user: res.data.user,
           accessToken: res.data.token,
         }),
       );
@@ -61,55 +56,91 @@ export const SignInView = () => {
       toast.error(err.message || "Login failed");
     }
   };
+
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-      {/* EMAIL */}
-      <Controller
-        name="email"
-        control={form.control}
-        render={({ field, fieldState }) => {
-          const { ref, ...rest } = field;
+    <div>
+      {/* Header */}
+      <div className="mb-6 text-center space-y-1">
+        <h1 className="text-2xl font-semibold">Welcome Back</h1>
+        <p className="text-sm text-muted-foreground">
+          Sign in to access your dashboard
+        </p>
+      </div>
 
-          return (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel>Email</FieldLabel>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        {/* EMAIL */}
+        <Controller
+          name="email"
+          control={form.control}
+          render={({ field, fieldState }) => {
+            const { ref, ...rest } = field;
 
-              <Input {...rest} placeholder="example@email.com" />
+            return (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel>Email</FieldLabel>
 
-              <FieldDescription>Enter your registered email</FieldDescription>
+                <Input {...rest} placeholder="example@email.com" />
 
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          );
-        }}
-      />
+                <FieldDescription>Enter your registered email</FieldDescription>
 
-      {/* PASSWORD */}
-      <Controller
-        name="password"
-        control={form.control}
-        render={({ field, fieldState }) => {
-          const { ref, ...rest } = field;
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            );
+          }}
+        />
 
-          return (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel>Password</FieldLabel>
+        {/* PASSWORD */}
+        <Controller
+          name="password"
+          control={form.control}
+          render={({ field, fieldState }) => {
+            const { ref, ...rest } = field;
 
-              <Input type="password" {...rest} placeholder="••••••••" />
+            return (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel>Password</FieldLabel>
 
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          );
-        }}
-      />
+                <div className="relative">
+                  <Input
+                    {...rest}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    className="pr-10"
+                  />
 
-      <Button
-        loading={isLoading}
-        disabled={isLoading}
-        type="submit"
-        className="w-full">
-        Sign In
-      </Button>
-    </form>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((p) => !p)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            );
+          }}
+        />
+
+        {/* SUBMIT */}
+        <Button
+          loading={isLoading}
+          disabled={isLoading}
+          type="submit"
+          className="w-full">
+          Sign In
+        </Button>
+      </form>
+
+      {/* Footer */}
+      <div className="mt-6 text-center text-sm text-muted-foreground">
+        Don&apos;t have an account?{" "}
+        <Link
+          href="/sign-up"
+          className="font-medium text-primary hover:underline">
+          Sign Up
+        </Link>
+      </div>
+    </div>
   );
 };

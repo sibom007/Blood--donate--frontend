@@ -17,21 +17,7 @@ export default function SignUp() {
 
       {/* FORM */}
       <div className="flex items-center justify-center p-8">
-        <div className="w-full max-w-md bg-card border border-border shadow-xl rounded-xl p-8">
-          {/* TITLE */}
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-primary">
-              Become a Blood Donor
-            </h2>
-
-            <p className="text-muted-foreground text-sm mt-2">
-              Complete the steps below to create your donor account
-            </p>
-          </div>
-
-          {/* STEP PROGRESS */}
-          <SignUpView />
-        </div>
+        <SignUpView />
       </div>
     </div>
   );

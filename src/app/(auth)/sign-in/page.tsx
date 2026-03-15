@@ -26,10 +26,6 @@ export default function SignIn() {
       {/* FORM SIDE */}
       <div className="flex items-center justify-center p-6">
         <Card className="w-full max-w-md bg-card border-border shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl">Sign In</CardTitle>
-            <CardDescription>Login to your donor account</CardDescription>
-          </CardHeader>
           <CardContent>
             <SignInView />
           </CardContent>

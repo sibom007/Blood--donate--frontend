@@ -36,6 +36,7 @@ export const removeUser = async () => {
       removeFromLocalStorage(authKey);
       store.dispatch(clearAuth());
       toast.success("Logout successful");
+      window.location.href = "/sign-in";
     }
   } catch (error) {
     throw error;
@@ -81,7 +82,6 @@ export const getNewAccessToken = async () => {
   } catch (error: any) {
     if (error.message === "Invalid refresh token") {
       removeUser();
-      window.location.href = "/sign-in";
     }
 
     throw error;
