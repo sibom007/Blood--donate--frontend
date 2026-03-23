@@ -1,21 +1,18 @@
 import { BaseQueryFn } from "@reduxjs/toolkit/query";
-import type { AxiosRequestConfig, AxiosError } from "axios";
-
-import { instance as axiosInstance } from "./axiosInstance";
+import { AxiosError, AxiosRequestConfig } from "axios";
+import { instance } from "./axiosInstance";
 import { ApiError } from "./type";
 
-type AxiosBaseQueryArgs = {
+export type AxiosBaseQueryArgs = {
   url: string;
   method?: AxiosRequestConfig["method"];
   data?: AxiosRequestConfig["data"];
   params?: AxiosRequestConfig["params"];
-  headers?: AxiosRequestConfig["headers"];
-  contentType?: string;
 };
 
-type AxiosBaseQueryError = {
+export type AxiosBaseQueryError = {
   status?: number;
-  data: ApiError | string;
+  data: ApiError;
 };
 
 export const axiosBaseQuery =
@@ -24,30 +21,23 @@ export const axiosBaseQuery =
     unknown,
     AxiosBaseQueryError
   > =>
-  async ({ url, method = "GET", data, params, headers, contentType }) => {
+  async ({ url, method = "GET", data, params }) => {
     try {
-      const result = await axiosInstance({
+      const result = await instance({
         url: baseUrl + url,
         method,
         data,
         params,
-        headers: {
-          ...headers,
-          "Content-Type": contentType ?? "application/json",
-        },
       });
 
-      return {
-        data: result,
-      };
-    } catch (axiosError) {
-      const err = axiosError as AxiosError<ApiError>;
+      return { data: result.data };
+    } catch (error) {
+      const err = error as AxiosError<ApiError>;
 
       return {
         error: {
           status: err.response?.status,
-          message: err.message,
-          data: err.response?.data ?? err.message,
+          data: err.response?.data!,
         },
       };
     }

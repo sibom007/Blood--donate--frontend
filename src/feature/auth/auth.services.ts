@@ -1,14 +1,9 @@
-import {
-  getFromLocalStorage,
-  removeFromLocalStorage,
-  setToLocalStorage,
-} from "@/lib/local-storage";
-import { toast } from "sonner";
+import { getFromLocalStorage, removeFromLocalStorage, setToLocalStorage } from "@/lib/local-storage";
+
 import { TJwtUser } from "./type";
-import { store } from "@/Redux/store";
 import { authKey } from "@/lib/authkey";
-import { setCredentials, clearAuth } from "@/feature/auth/auth-slice";
 import { instance as axiosInstance } from "@/helper/axios/axiosInstance";
+import { toast } from "sonner";
 
 /* ---------------- STORE TOKEN ---------------- */
 
@@ -21,26 +16,6 @@ export const storeUserInfo = (accessToken: string) => {
 export const isLoggedIn = () => {
   const token = getFromLocalStorage(authKey);
   return !!token;
-};
-
-/* ---------------- LOGOUT ---------------- */
-
-export const removeUser = async () => {
-  try {
-    const res = await axiosInstance({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL!}/auth/logout`,
-      method: "POST",
-      withCredentials: true,
-    });
-    if (res.data.message === "done") {
-      removeFromLocalStorage(authKey);
-      store.dispatch(clearAuth());
-      toast.success("Logout successful");
-      window.location.href = "/sign-in";
-    }
-  } catch (error) {
-    throw error;
-  }
 };
 
 /* ---------------- GET TOKEN ---------------- */
@@ -59,31 +34,30 @@ export const getNewAccessToken = async () => {
       withCredentials: true,
     });
 
-    const newToken = response?.data?.accessToken;
-    const user = response?.data?.user as TJwtUser;
+    const newToken = response?.data?.data.accessToken;
+    const user = response?.data?.data.user as TJwtUser;
 
-    if (newToken) {
-      if (user.tokenVersion === 1) {
-        removeUser();
-        window.location.href = "/sign-in";
-      }
-      storeUserInfo(newToken);
-
-      // sync redux store
-      store.dispatch(
-        setCredentials({
-          accessToken: newToken,
-          user,
-        }),
-      );
-    }
-
-    return newToken;
-  } catch (error: any) {
-    if (error.message === "Invalid refresh token") {
-      removeUser();
-    }
-
+    return { accessToken: newToken, user };
+  } catch (error) {
     throw error;
   }
 };
+
+/* ---------------- LOGOUT THE USER ---------------- */
+
+export const removeUser = async () => {
+  try {
+    const res = await axiosInstance({
+      url: `${process.env.NEXT_PUBLIC_BACKEND_API_URL!}/auth/logout`,
+      method: "POST",
+      withCredentials: true,
+    });
+    if (res.data.message === "done") {
+      removeFromLocalStorage(authKey);
+      toast.success("Logout successful");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+

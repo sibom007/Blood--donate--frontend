@@ -7,11 +7,17 @@ export const useUser = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user === null) {
-      setLoading(true);
-    } else {
+
+    if (user) {
       setLoading(false);
+      return;
     }
+
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, [user]);
 
   return { user, loading };

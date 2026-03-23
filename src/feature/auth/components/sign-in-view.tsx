@@ -20,12 +20,15 @@ import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/feature/auth/auth-slice";
 import type { AppDispatch } from "@/Redux/store";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 
 export const SignInView = () => {
-  const [signIn, { isLoading }] = useSignInMutation();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect");
+
   const router = useRouter();
+  const [signIn, { isLoading }] = useSignInMutation();
   const dispatch = useDispatch<AppDispatch>();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -33,7 +36,7 @@ export const SignInView = () => {
     resolver: zodResolver(SignInSchema),
     defaultValues: {
       email: "soffy@gmail.com",
-      password: "7777777",
+      password: "Sibom@12345",
     },
   });
 
@@ -50,8 +53,18 @@ export const SignInView = () => {
           accessToken: res.data.token,
         }),
       );
+      const safeRedirect =
+        redirectPath && redirectPath.startsWith("/")
+          ? redirectPath
+          : "/dashboard";
 
-      router.push("/dashboard");
+      // ✅ force Next.js to re-read cookies
+      router.refresh();
+
+      // small delay ensures cookie is available
+      setTimeout(() => {
+        router.push(safeRedirect);
+      }, 50);
     } catch (err: any) {
       toast.error(err.message || "Login failed");
     }

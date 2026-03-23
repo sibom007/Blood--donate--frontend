@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetDonnerListQuery } from "@/Redux/api/BloodDonnerapi";
+import { useGetDonnerListQuery } from "@/Redux/api/blood-donate-api";
 import { useDebounced } from "@/Redux/hooks";
 import "./Style.css";
 import {
