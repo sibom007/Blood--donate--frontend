@@ -3,7 +3,7 @@ import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import ContactWithBloodDonner from "./ContactWithBloodDonner";
 import Link from "next/link";
-import { useGetSingleDonnerQuery } from "@/Redux/api/BloodDonnerapi";
+import { useGetSingleDonnerQuery } from "@/Redux/api/blood-donate-api";
 import nop from "@/assets/img.png";
 
 const DonnerDetails = ({ id }: { id: string }) => {

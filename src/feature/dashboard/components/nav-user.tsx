@@ -23,12 +23,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { removeUser } from "@/feature/auth/auth.services";
+
 import Link from "next/link";
 import { useUser } from "@/feature/auth/hooks/useUser";
 import { generateAvatar } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePathname } from "next/navigation";
+import { Logout } from "@/feature/auth/lib";
 
 const links = [
   {
@@ -118,7 +119,7 @@ export function NavUser() {
               })}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={removeUser}>
+            <DropdownMenuItem onClick={Logout}>
               <LogOut />
               Logout
             </DropdownMenuItem>

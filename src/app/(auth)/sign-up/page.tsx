@@ -1,6 +1,10 @@
 import React from "react";
 import Image from "next/image";
+import { Metadata } from "next";
 import { SignUpView } from "@/feature/auth/components/sign-up-view";
+
+export const metadata: Metadata = { title: "Sign-Up" };
+
 
 export default function SignUp() {
   return (

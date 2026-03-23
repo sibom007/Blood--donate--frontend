@@ -1,28 +1,9 @@
 import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseapi";
 
-const BloodDoonerApi = baseApi.injectEndpoints({
+const BloodDonateApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    GetDonnerList: build.query({
-      query: (data) => {
-        return {
-          url: "donor-list",
-          method: "GET",
-          params: data,
-        };
-      },
-      providesTags: [tagTypes.Donner],
-    }),
-    GetSingleDonner: build.query({
-      query: (id) => {
-        return {
-          url: `donner-details/${id}`,
-          method: "GET",
-        };
-      },
-      providesTags: [tagTypes.Donner],
-    }),
-    BloodDonnerRequest: build.mutation({
+    BloodDonateRequest: build.mutation({
       query: (data) => {
         return {
           url: `donation-request`,
@@ -32,6 +13,27 @@ const BloodDoonerApi = baseApi.injectEndpoints({
       },
       invalidatesTags: [tagTypes.BloodRequest, tagTypes.MyBloodRequest],
     }),
+
+    MyDonateRequestList: build.query({
+      query: (data) => {
+        return {
+          url: "my-request-view",
+          method: "GET",
+          params: data,
+        };
+      },
+      providesTags: [tagTypes.MyBloodRequest],
+    }),
+    GetRequestDetails: build.query({
+      query: (id) => {
+        return {
+          url: `request-details/${id}`,
+          method: "GET",
+        };
+      },
+      providesTags: [tagTypes.Donner],
+    }),
+
     GetMyBloodDonnerRequest: build.query({
       query: () => {
         return {
@@ -64,10 +66,11 @@ const BloodDoonerApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetDonnerListQuery,
-  useGetSingleDonnerQuery,
-  useBloodDonnerRequestMutation,
+  useBloodDonateRequestMutation,
+  useMyDonateRequestListQuery,
+  useGetRequestDetailsQuery,
+
   useGetMyBloodDonnerRequestQuery,
   useGetBloodDonnerRequestQuery,
   useUpadtestatusMutation,
-} = BloodDoonerApi;
+} = BloodDonateApi;

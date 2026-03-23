@@ -4,13 +4,10 @@ import type { NextRequest } from "next/server";
 import { TJwtUser } from "./feature/auth/type";
 
 const publicRoutes = ["/", "/sign-in", "/sign-up"];
-
-const getDashboardRoute = (role: string) => {
-  return `/dashboard/${role.toLowerCase()}`;
-};
+const privateRoutes = ["/dashboard", "/request-blood"];
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
@@ -27,11 +24,14 @@ export function middleware(request: NextRequest) {
   const isAuthenticated = !!decoded;
   const role = decoded?.role;
 
-  const roleDashboard = role ? getDashboardRoute(role) : null;
-
-  /* prevent logged users from auth pages */
+  /* redirect logged-in users properly */
   if (isAuthenticated && (pathname === "/sign-in" || pathname === "/sign-up")) {
-    return NextResponse.redirect(new URL(roleDashboard!, request.url));
+    const redirect = searchParams.get("redirect");
+
+    const safeRedirect =
+      redirect && redirect.startsWith("/") ? redirect : "/dashboard";
+
+    return NextResponse.redirect(new URL(safeRedirect, request.url));
   }
 
   /* allow public routes */
@@ -39,16 +39,24 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  /* block dashboard routes if not logged in */
-  if (!isAuthenticated && pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+  /* block private routes */
+  if (
+    !isAuthenticated &&
+    privateRoutes.some((route) => pathname.startsWith(route))
+  ) {
+    const loginUrl = new URL("/sign-in", request.url);
+
+    loginUrl.searchParams.set(
+      "redirect",
+      request.nextUrl.pathname + request.nextUrl.search,
+    );
+
+    return NextResponse.redirect(loginUrl);
   }
 
-  /* check role exists for dashboard */
-  if (pathname.startsWith("/dashboard")) {
-    if (!role) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
-    }
+  /* role check */
+  if (pathname.startsWith("/dashboard") && !role) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
   return NextResponse.next();

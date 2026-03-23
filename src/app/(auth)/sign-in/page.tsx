@@ -1,14 +1,11 @@
 import React from "react";
 import Image from "next/image";
-
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Metadata } from "next";
+import { Card, CardContent } from "@/components/ui/card";
 import { SignInView } from "@/feature/auth/components/sign-in-view";
+
+export const metadata: Metadata = { title: "Sign-In" };
+
 
 export default function SignIn() {
   return (
