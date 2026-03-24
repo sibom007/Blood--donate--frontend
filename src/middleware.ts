@@ -10,6 +10,7 @@ export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
   const refreshToken = request.cookies.get("refreshToken")?.value;
+  console.log("🚀 ~ middleware ~ refreshToken:", refreshToken);
 
   let decoded: TJwtUser | null = null;
 

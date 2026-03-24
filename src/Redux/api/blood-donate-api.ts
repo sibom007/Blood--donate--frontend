@@ -6,7 +6,7 @@ const BloodDonateApi = baseApi.injectEndpoints({
     BloodDonateRequest: build.mutation({
       query: (data) => {
         return {
-          url: `donation-request`,
+          url: `/donation-request`,
           method: "POST",
           data,
         };
@@ -17,7 +17,7 @@ const BloodDonateApi = baseApi.injectEndpoints({
     MyDonateRequestList: build.query({
       query: (data) => {
         return {
-          url: "my-request-view",
+          url: "/my-request-view",
           method: "GET",
           params: data,
         };
@@ -27,7 +27,7 @@ const BloodDonateApi = baseApi.injectEndpoints({
     GetRequestDetails: build.query({
       query: (id) => {
         return {
-          url: `request-details/${id}`,
+          url: `/request-details/${id}`,
           method: "GET",
         };
       },

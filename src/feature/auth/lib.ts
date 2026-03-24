@@ -13,7 +13,8 @@ export const Logout = async () => {
       method: "POST",
       withCredentials: true,
     });
-    if (res.data.message === "done") {
+
+    if (res.data.data.message === "done") {
       removeFromLocalStorage(authKey);
       store.dispatch(clearAuth());
       toast.success("Logout successful");

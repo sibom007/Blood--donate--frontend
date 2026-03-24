@@ -5,7 +5,7 @@ const AuthApi = baseApi.injectEndpoints({
     signUp: build.mutation({
       query: (data) => {
         return {
-          url: "create-user",
+          url: "/create-user",
           method: "POST",
           data,
         };
@@ -14,7 +14,7 @@ const AuthApi = baseApi.injectEndpoints({
     signIn: build.mutation({
       query: (data) => {
         return {
-          url: "auth/login",
+          url: "/auth/login",
           method: "POST",
           data,
         };
@@ -23,7 +23,7 @@ const AuthApi = baseApi.injectEndpoints({
     logout: build.mutation({
       query: () => {
         return {
-          url: "auth/logout",
+          url: "/auth/logout",
           method: "POST",
         };
       },
@@ -31,7 +31,7 @@ const AuthApi = baseApi.injectEndpoints({
     ChangePassword: build.mutation({
       query: (data) => {
         return {
-          url: "auth/change-password",
+          url: "/auth/change-password",
           method: "POST",
           data,
         };
