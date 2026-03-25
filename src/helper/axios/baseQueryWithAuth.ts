@@ -75,7 +75,6 @@ export const baseQueryWithAuth: BaseQueryFn<
         //  update redux
         api.dispatch(
           setCredentials({
-            accessToken: refreshData.accessToken,
             user: refreshData.user,
           }),
         );
