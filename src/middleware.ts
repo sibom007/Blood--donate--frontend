@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { TJwtUser } from "./feature/auth/type";
 
+
 const publicRoutes = ["/", "/sign-in", "/sign-up"];
 const privateRoutes = ["/dashboard", "/request-blood"];
 
@@ -10,7 +11,6 @@ export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
   const refreshToken = request.cookies.get("refreshToken")?.value;
-  console.log("🚀 ~ middleware ~ refreshToken:", refreshToken);
 
   let decoded: TJwtUser | null = null;
 

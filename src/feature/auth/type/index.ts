@@ -67,10 +67,8 @@ export type TJwtUser = {
 
 export type AuthState = {
   user: TJwtUser | null;
-  accessToken: string | null;
 };
 
 export type AuthPayload = {
   user: TJwtUser;
-  accessToken: string;
 };

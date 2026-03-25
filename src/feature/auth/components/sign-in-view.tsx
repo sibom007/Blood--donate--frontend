@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import {
   Field,
   FieldLabel,
@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { SignInInputData, SignInSchema } from "../type";
-import { useSignInMutation } from "@/Redux/api/auth-api";
 import { setToLocalStorage } from "@/lib/local-storage";
 import { authKey } from "@/lib/authkey";
 import { toast } from "sonner";
@@ -22,13 +21,15 @@ import { setCredentials } from "@/feature/auth/auth-slice";
 import type { AppDispatch } from "@/Redux/store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import { loginAction } from "../actions/login-actions";
 
 export const SignInView = () => {
+  const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirect");
 
   const router = useRouter();
-  const [signIn, { isLoading }] = useSignInMutation();
+
   const dispatch = useDispatch<AppDispatch>();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -40,34 +41,32 @@ export const SignInView = () => {
     },
   });
 
-  const onSubmit = async (value: SignInInputData) => {
-    try {
-      const res = await signIn(value).unwrap();
-      toast.success(res.message);
+  const onSubmit = (value: SignInInputData) => {
+    startTransition(async () => {
+      try {
+        const res = await loginAction(value);
 
-      setToLocalStorage(authKey, res.data.token);
+        toast.success(res.message);
 
-      dispatch(
-        setCredentials({
-          user: res.data.user,
-          accessToken: res.data.token,
-        }),
-      );
-      const safeRedirect =
-        redirectPath && redirectPath.startsWith("/")
-          ? redirectPath
-          : "/dashboard";
+        setToLocalStorage(authKey, res.accessToken);
 
-      // ✅ force Next.js to re-read cookies
-      router.refresh();
+        dispatch(
+          setCredentials({
+            user: res.user,
+          }),
+        );
 
-      // small delay ensures cookie is available
-      setTimeout(() => {
+        const safeRedirect =
+          redirectPath && redirectPath.startsWith("/")
+            ? redirectPath
+            : "/dashboard";
+
+        router.refresh();
         router.push(safeRedirect);
-      }, 50);
-    } catch (err: any) {
-      toast.error(err.message || "Login failed");
-    }
+      } catch (err: any) {
+        toast.error(err.message || "Login failed");
+      }
+    });
   };
 
   return (
@@ -137,8 +136,8 @@ export const SignInView = () => {
 
         {/* SUBMIT */}
         <Button
-          loading={isLoading}
-          disabled={isLoading}
+          loading={isPending}
+          disabled={isPending}
           type="submit"
           className="w-full">
           Sign In

@@ -52,7 +52,7 @@ export const removeUser = async () => {
       method: "POST",
       withCredentials: true,
     });
-    if (res.data.message === "done") {
+    if (res.data.data?.message === "done") {
       removeFromLocalStorage(authKey);
       toast.success("Logout successful");
     }
