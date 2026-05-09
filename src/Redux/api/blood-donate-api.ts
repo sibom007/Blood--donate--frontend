@@ -13,6 +13,16 @@ const BloodDonateApi = baseApi.injectEndpoints({
       },
       invalidatesTags: [tagTypes.BloodRequest, tagTypes.MyBloodRequest],
     }),
+    PersonalDonateRequest: build.mutation({
+      query: (data) => {
+        return {
+          url: `/personal-request`,
+          method: "POST",
+          data,
+        };
+      },
+      invalidatesTags: [tagTypes.BloodRequest, tagTypes.MyBloodRequest],
+    }),
 
     MyDonateRequestList: build.query({
       query: (data) => {
@@ -24,6 +34,17 @@ const BloodDonateApi = baseApi.injectEndpoints({
       },
       providesTags: [tagTypes.MyBloodRequest],
     }),
+    AvailableBloodList: build.query({
+      query: (data) => {
+        return {
+          url: "/available-blood",
+          method: "GET",
+          params: data,
+        };
+      },
+      providesTags: [tagTypes.MyBloodRequest],
+    }),
+
     GetRequestDetails: build.query({
       query: (id) => {
         return {
@@ -67,8 +88,11 @@ const BloodDonateApi = baseApi.injectEndpoints({
 
 export const {
   useBloodDonateRequestMutation,
+  usePersonalDonateRequestMutation,
+  
   useMyDonateRequestListQuery,
   useGetRequestDetailsQuery,
+  useAvailableBloodListQuery,
 
   useGetMyBloodDonnerRequestQuery,
   useGetBloodDonnerRequestQuery,

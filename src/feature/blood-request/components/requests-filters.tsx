@@ -61,25 +61,7 @@ export function RequestFilters({ query, setQuery }: FiltersProps) {
   };
 
   const FiltersContent = () => (
-    <div className="grid gap-5">
-      {/* Urgency */}
-      <div className="space-y-2">
-        <p className="text-sm font-medium">Urgency</p>
-        <Select
-          value={query.urgency ?? "ALL"}
-          onValueChange={(v) => update("urgency", v)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select urgency" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">All</SelectItem>
-            <SelectItem value="NORMAL">Normal</SelectItem>
-            <SelectItem value="URGENT">Urgent</SelectItem>
-            <SelectItem value="CRITICAL">Critical</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
+    <div className="grid gap-3">
       {/* Status */}
       <div className="space-y-2">
         <p className="text-sm font-medium">Status</p>
@@ -94,6 +76,7 @@ export function RequestFilters({ query, setQuery }: FiltersProps) {
             <SelectItem value="PENDING">Pending</SelectItem>
             <SelectItem value="ACCEPTED">Accepted</SelectItem>
             <SelectItem value="COMPLETED">Completed</SelectItem>
+            <SelectItem value="CANCELLED">Cancelled</SelectItem>
           </SelectContent>
         </Select>
       </div>

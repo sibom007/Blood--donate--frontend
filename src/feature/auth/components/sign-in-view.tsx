@@ -36,8 +36,8 @@ export const SignInView = () => {
   const form = useForm<SignInInputData>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
-      email: "soffy@gmail.com",
-      password: "Sibom@12345",
+      email: "user1@gmail.com",
+      password: "Sibom@1234",
     },
   });
 
@@ -64,6 +64,7 @@ export const SignInView = () => {
         router.refresh();
         router.push(safeRedirect);
       } catch (err: any) {
+        console.log("🚀 ~ onSubmit ~ err:", err)
         toast.error(err.message || "Login failed");
       }
     });

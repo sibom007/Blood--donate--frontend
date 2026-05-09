@@ -46,8 +46,8 @@ const data = {
       icon: GitPullRequestIcon,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
+      name: "Available Blood",
+      url: "/dashboard/available-blood",
       icon: PieChart,
     },
     {

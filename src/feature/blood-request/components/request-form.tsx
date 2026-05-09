@@ -90,8 +90,6 @@ export default function RequestForm() {
       return;
     }
 
-    console.log({ data });
-
     try {
       const res = await BloodDonateRequest(data).unwrap();
       toast.success(res.message);

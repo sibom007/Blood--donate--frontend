@@ -1,28 +1,13 @@
 "use client";
 
-import {
-  Folder,
-  MoreHorizontal,
-  Share,
-  Trash2,
-  type LucideIcon,
-} from "lucide-react";
+import { MoreHorizontal, type LucideIcon } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -52,7 +37,7 @@ export function SidebarLinks({
                   className={cn(
                     "flex items-center gap-2 mt-1.5 rounded-md px-3 py-2 transition-colors",
                     isActive
-                      ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                      ? "bg-sidebar-primary-foreground text-primary-foreground font-medium shadow-xs"
                       : "text-muted-foreground hover:bg-accent hover:text-foreground",
                   )}>
                   <item.icon

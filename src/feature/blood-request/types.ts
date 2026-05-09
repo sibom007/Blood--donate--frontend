@@ -21,6 +21,11 @@ export const bloodGroupLabels: Record<(typeof bloodGroups)[number], string> = {
   AB_POSITIVE: "AB+",
   AB_NEGATIVE: "AB-",
 };
+export const getBloodGroupLabel = (
+  group: keyof typeof bloodGroupLabels,
+): string => {
+  return bloodGroupLabels[group] || group;
+};
 
 export const RequestBloodSchema = z.object({
   bloodType: z.enum(bloodGroups),
@@ -55,10 +60,7 @@ export interface GetRequestsQueryInput {
   bloodType?: BloodGroup;
   urgency?: UrgencyLevel;
   requestStatus?: RequestStatus;
-  hospitalName?: string;
   search?: string;
-  startDate?: string;
-  endDate?: string;
   sortBy?: "urgency" | "createdAt" | "dateOfDonation";
   sortOrder?: "asc" | "desc";
   limit?: number;
