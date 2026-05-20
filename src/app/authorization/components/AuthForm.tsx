@@ -239,7 +239,7 @@ const AuthForm = () => {
             <span>{variant === "LOGIN" ? "Sign In" : "Register"}</span>
           </LoadingButton>
         </DForm>
-        <div className="border-[1px] mt-5 border-gray-500" />
+        <div className="border mt-5 border-gray-500" />
         <div className="mt-3">
           {/* <SocialLogin /> */}
           <DemoLoginInfo />

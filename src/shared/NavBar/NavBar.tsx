@@ -15,7 +15,7 @@ import { GetUserinfo, logOut } from "@/service/Action/Login";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import NoPhoto from "@/assets/img.png";
-import { useGetMyProfileBYIdQuery } from "@/Redux/api/Authapi";
+
 import { TUser } from "@/types";
 import { toast } from "sonner";
 
@@ -24,8 +24,8 @@ const settings = ["Profile", "Account", "Dashboard", "L"];
 
 function NavBar() {
   const [userId, setUser] = React.useState<TUser | null>(null);
-  const { data } = useGetMyProfileBYIdQuery(userId?.id);
-  const user = data?.data;
+
+  const user = {};
 
   const router = useRouter();
 
@@ -45,10 +45,10 @@ function NavBar() {
   };
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
+    null,
   );
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
+    null,
   );
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {

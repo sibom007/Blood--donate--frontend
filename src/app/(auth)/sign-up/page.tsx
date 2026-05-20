@@ -1,7 +1,8 @@
+import SignUpForm from "@/feature/auth/components/sign-up-form";
 import React from "react";
 
 function page() {
-  return <div>Sign-Up</div>;
+  return <SignUpForm />;
 }
 
 export default page;
