@@ -24,8 +24,10 @@ import { SignInFormValues, signInSchema } from "../types";
 import { toast } from "sonner";
 import { useSignIn } from "../hooks/use-sign-in";
 import useAuthStore from "@/zustant/auth-zustand";
+import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
+  const router = useRouter();
   const { mutate, isPending } = useSignIn();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -57,6 +59,7 @@ export default function SignInForm() {
           email: "",
           password: "",
         });
+        router.push("/");
       },
 
       onError: (error) => {
@@ -269,6 +272,7 @@ export default function SignInForm() {
                     }}>
                     <Button
                       type="submit"
+                      isLoading={isPending}
                       disabled={isPending}
                       className="
                       w-full

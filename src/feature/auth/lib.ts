@@ -16,10 +16,10 @@ export const getNewAccessToken = async () => {
 
 export const Logout = async () => {
   const response = await axios.post(
-    `${config.backendUrl}/auth/logout`,
+    `${config.backendUrl}/logout`,
     {},
     { withCredentials: true },
   );
 
-  return { status: response.data.data.message };
+  return { status: response.data.data };
 };

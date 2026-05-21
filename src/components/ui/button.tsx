@@ -1,8 +1,9 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { Slot } from "radix-ui"
-
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { Slot } from "radix-ui";
+import { Loader } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { motion, MotionProps } from "framer-motion";
 
 const buttonVariants = cva(
   "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-xs/relaxed font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -36,30 +37,90 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
-)
+  },
+);
+
+type ButtonProps = Omit<React.ComponentProps<"button">, keyof MotionProps> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+    isLoading?: boolean;
+    icon?: React.ReactNode;
+    iconPosition?: "start" | "end";
+    children: React.ReactNode;
+  };
+
+// Left for safety
+// type ButtonProps = React.ComponentProps<"button"> &
+//   VariantProps<typeof buttonVariants> & {
+//     asChild?: boolean;
+//     isLoading?: boolean;
+//     icon?: React.ReactNode;
+//     iconPosition?: "start" | "end";
+//   };
 
 function Button({
   className,
   variant = "default",
   size = "default",
   asChild = false,
+  isLoading = false,
+  icon,
+  iconPosition = "start",
+  children,
+  disabled,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
-  const Comp = asChild ? Slot.Root : "button"
+}: ButtonProps) {
+  const Comp = asChild ? Slot.Root : "button";
+
+  const renderIcon = () => {
+    if (isLoading) {
+      return <Loader className="animate-spin" />;
+    }
+
+    return icon;
+  };
+
+  const hasIcon = !!icon || isLoading;
+  const MotionButton = motion.button;
+
+  if (asChild) {
+    return (
+      <Comp
+        data-slot="button"
+        data-variant={variant}
+        data-size={size}
+        data-icon={hasIcon ? `inline-${iconPosition}` : undefined}
+        className={cn(buttonVariants({ variant, size, className }))}
+        aria-busy={isLoading}
+        {...props}>
+        {hasIcon && iconPosition === "start" && renderIcon()}
+
+        {children}
+
+        {hasIcon && iconPosition === "end" && renderIcon()}
+      </Comp>
+    );
+  }
 
   return (
-    <Comp
+    <MotionButton
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
       data-slot="button"
       data-variant={variant}
       data-size={size}
+      data-icon={hasIcon ? `inline-${iconPosition}` : undefined}
       className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    />
-  )
+      disabled={disabled || isLoading}
+      aria-busy={isLoading}
+      {...props}>
+      {hasIcon && iconPosition === "start" && renderIcon()}
+
+      {children}
+
+      {hasIcon && iconPosition === "end" && renderIcon()}
+    </MotionButton>
+  );
 }
 
-export { Button, buttonVariants }
+export { Button, buttonVariants };
